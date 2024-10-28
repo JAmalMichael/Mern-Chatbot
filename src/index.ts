@@ -1,10 +1,9 @@
-import express from "express";
+import app from "./app"
+import databaseConnect from "./db/dbconnect";
 
-const app  = express();
+const port = process.env.PORT || 5001;
+databaseConnect().then( () => {
+    app.listen(port, () => console.log(`App is starting at PORT ${port}`));
+}). catch(
+    (err)=> console.log(err))
 
-//middlewares
-app.use(express.json());
-
-app.listen(3000, () => console.log(`App is starting at PORT 3000`)
-    
-)
