@@ -20,13 +20,14 @@ const getAllUser = async (req, res) => {
     }
 };
 exports.getAllUser = getAllUser;
-const userSignUp = async (req, res) => {
+const userSignUp = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
         const hashedPassword = await (0, bcryptjs_1.hash)(password, 10);
         const user = new User_1.default({ name, email, password: hashedPassword });
         await user.save();
-        res.status(200).json(user);
+        res.status(201).json(user);
+        next();
     }
     catch (error) {
         console.log(error);
