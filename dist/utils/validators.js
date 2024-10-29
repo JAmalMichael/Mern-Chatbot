@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signupValidator = exports.validate = void 0;
+exports.signupValidator = exports.loginValidator = exports.validate = void 0;
 const express_validator_1 = require("express-validator");
 const validate = (validations) => {
     return async (req, res, next) => {
@@ -22,9 +22,12 @@ const validate = (validations) => {
     };
 };
 exports.validate = validate;
-exports.signupValidator = [
-    (0, express_validator_1.body)("name").notEmpty().withMessage('Name is required'),
+exports.loginValidator = [
     (0, express_validator_1.body)("email").trim().isEmail().withMessage('email is required'),
     (0, express_validator_1.body)("password").trim().isLength({ min: 8 }).withMessage('Password should contain at least 8 characters'),
+];
+exports.signupValidator = [
+    (0, express_validator_1.body)("name").notEmpty().withMessage('Name is required'),
+    ...exports.loginValidator
 ];
 //# sourceMappingURL=validators.js.map
