@@ -7,10 +7,12 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = require("dotenv");
 const morgan_1 = __importDefault(require("morgan"));
 const index_1 = __importDefault(require("./routes/index"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
 //middlewares
 app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)(process.env.COOKIE_SECRET));
 app.use((0, morgan_1.default)("dev")); //to be removed in production
 app.use("/api/v1", index_1.default);
 exports.default = app;

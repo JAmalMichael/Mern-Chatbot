@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userLogIn = exports.userSignUp = exports.getAllUser = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const bcryptjs_1 = require("bcryptjs");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const constants_1 = require("../utils/constants");
 const getAllUser = async (req, res) => {
     try {
         const users = await User_1.default.find();
@@ -30,7 +32,24 @@ const userSignUp = async (req, res, next) => {
         const hashedPassword = await (0, bcryptjs_1.hash)(password, 10);
         const user = new User_1.default({ name, email, password: hashedPassword });
         await user.save();
-        res.status(201).json(user);
+        //creating and storing cookie on user sign in
+        res.clearCookie(constants_1.COOKIE_NAME, {
+            domain: "localhost",
+            httpOnly: true,
+            signed: true,
+            path: "/"
+        });
+        //creates a token
+        const payload = { id: user.id, email };
+        const token = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "2d",
+        });
+        //setting date for cookie to expire
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 2);
+        //creating an http only cookie with our token which is stored in the local host as our current domain.
+        res.cookie(constants_1.COOKIE_NAME, token, { path: "/", domain: "localhost", expires, httpOnly: true, signed: true });
+        res.status(200).json({ message: "User created succesfully", token, user });
         next();
     }
     catch (error) {
@@ -50,7 +69,24 @@ const userLogIn = async (req, res, next) => {
         if (!isMatched) {
             return res.status(400).json({ message: 'Invalid credentials / Incorrect Password' });
         }
-        res.status(200).json({ message: "User logged in successfully.", user });
+        //clears the cookie on new user login
+        res.clearCookie(constants_1.COOKIE_NAME, {
+            domain: "localhost",
+            httpOnly: true,
+            signed: true,
+            path: "/"
+        });
+        //creates a token
+        const payload = { id: user.id, email };
+        const token = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "2d",
+        });
+        //setting date for cookie to expire
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 2);
+        //creating an http only cookie with our token which is stored in the local host as our current domain.
+        res.cookie(constants_1.COOKIE_NAME, token, { path: "/", domain: "localhost", expires, httpOnly: true, signed: true });
+        res.status(200).json({ message: "User loggined succesfully", token });
     }
     catch (error) {
         console.log(error);

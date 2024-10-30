@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Neucha&family=Roboto+Slab:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Neucha&family=Roboto+Slab:wght@100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+html, body {
+  margin: o;
+  padding: 0;
+  box-sizing: border-box;
+  color: white;
+  font-family: "Roboto Slab", serif;
+  background: #05101c;
+}
