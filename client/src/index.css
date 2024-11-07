@@ -6,6 +6,14 @@
 @tailwind utilities;
 
 
+/* resuable components */
+@layer components {
+  .image-inverted {
+    filter: invert(100%);
+  }
+}
+
+
 html, body {
   margin: o;
   padding: 0;
