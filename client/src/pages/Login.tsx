@@ -3,6 +3,16 @@ import CustomizedInput from '../components/shared/CustomizedInput'
 import { IoIosLogIn } from "react-icons/io"
 
 const Login = () => {
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+
+      const email = formData.get('email');
+      const password = formData.get('password');
+      console.log(email, password)
+  }
+
   return (
     <Box width={'100%'} height={"100%"} display="flex" flex={1}>
           <Box padding={8} mt={8} 
@@ -12,7 +22,8 @@ const Login = () => {
           <Box display="flex" flex={{ xs: 1, md: 0.5 }} justifyContent={"center"} 
           alignItems={"center"} padding={2} ml={"auto"} mt={16}>
 
-              <form className='m-auto p-[30px] rounded-sm shadow-lg border-none '>
+              <form className='m-auto p-[30px] rounded-sm shadow-lg border-none ' 
+              onSubmit={handleSubmit}>
                   <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
