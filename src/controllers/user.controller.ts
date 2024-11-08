@@ -97,7 +97,7 @@ export const userLogIn = async(req: Request, res: Response, next: NextFunction) 
           res.cookie(COOKIE_NAME, token, {path: "/", domain: "localhost", expires, httpOnly: true, signed: true});
 
 
-          res.status(200).json({message: "User loggined succesfully", name: user.name, email: user.email})
+          res.status(200).json({message: "User logged in succesfully", name: user.name, email: user.email})
     } catch (error) {
         console.log(error)
         res.status(500).json({message: "Internal server error"})

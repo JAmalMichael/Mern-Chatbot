@@ -86,7 +86,7 @@ const userLogIn = async (req, res, next) => {
         expires.setDate(expires.getDate() + 2);
         //creating an http only cookie with our token which is stored in the local host as our current domain.
         res.cookie(constants_1.COOKIE_NAME, token, { path: "/", domain: "localhost", expires, httpOnly: true, signed: true });
-        res.status(200).json({ message: "User loggined succesfully", name: user.name, email: user.email });
+        res.status(200).json({ message: "User logged in succesfully", name: user.name, email: user.email });
     }
     catch (error) {
         console.log(error);
