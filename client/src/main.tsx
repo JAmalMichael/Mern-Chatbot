@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext.tsx'
 import axios from 'axios';
 axios.defaults.baseURL = "http://localhost:5000/api/v1"
 axios.defaults.withCredentials = true;
+import { Toaster } from 'react-hot-toast';
 
 const theme = createTheme({
   typography: { 
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')!).render(
         <BrowserRouter>
         <ThemeProvider theme={theme}>  
         </ThemeProvider>
+        <Toaster position='top-right'/>
         <App />
         </BrowserRouter>
     </AuthProvider>

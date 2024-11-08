@@ -49,7 +49,7 @@ const userSignUp = async (req, res, next) => {
         expires.setDate(expires.getDate() + 2);
         //creating an http only cookie with our token which is stored in the local host as our current domain.
         res.cookie(constants_1.COOKIE_NAME, token, { path: "/", domain: "localhost", expires, httpOnly: true, signed: true });
-        res.status(200).json({ message: "User created succesfully", token, user });
+        res.status(200).json({ message: "User created succesfully", token, name: user.name, email: user.email });
         next();
     }
     catch (error) {
@@ -86,7 +86,7 @@ const userLogIn = async (req, res, next) => {
         expires.setDate(expires.getDate() + 2);
         //creating an http only cookie with our token which is stored in the local host as our current domain.
         res.cookie(constants_1.COOKIE_NAME, token, { path: "/", domain: "localhost", expires, httpOnly: true, signed: true });
-        res.status(200).json({ message: "User loggined succesfully", token });
+        res.status(200).json({ message: "User loggined succesfully", name: user.name, email: user.email });
     }
     catch (error) {
         console.log(error);
