@@ -22,3 +22,8 @@ html, body {
   font-family: "Roboto Slab", serif;
   background: #05101c;
 }
+
+.MuiOutlinedInput-input-root.Mui-focused,
+.MuiOutlinedInput-notchedOutline {
+  border-color: white !important;
+}
