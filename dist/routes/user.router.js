@@ -8,6 +8,6 @@ const userRouter = (0, express_1.Router)();
 userRouter.get('/', user_controller_js_1.getAllUser);
 userRouter.post('/signup', (0, validators_js_1.validate)(validators_js_1.signupValidator), user_controller_js_1.userSignUp);
 userRouter.post('/login', (0, validators_js_1.validate)(validators_js_1.loginValidator), user_controller_js_1.userLogIn);
-userRouter.get('/auth-status', token_manager_js_1.verifyToken, user_controller_js_1.userLogIn);
+userRouter.get('/auth-status', token_manager_js_1.verifyToken, user_controller_js_1.verifyUser);
 exports.default = userRouter;
 //# sourceMappingURL=user.router.js.map

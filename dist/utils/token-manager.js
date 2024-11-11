@@ -18,7 +18,6 @@ const verifyToken = async (req, res, next) => {
                 return res.status(401).json({ meesage: "Token not valid" });
             }
             else {
-                console.log("Verification Successful");
                 resolve();
                 res.locals.jwtData = success;
                 return next();

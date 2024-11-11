@@ -104,3 +104,20 @@ export const userLogIn = async(req: Request, res: Response, next: NextFunction) 
     }
 }
 
+export const verifyUser = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+      const user = await User.findById(res.locals.jwtData.id);
+      if(!user) {
+          return res.status(401).json({message: "User not registered or token not found"});
+      }
+      if(user._id.toString() !== res.locals.jwtData.id) {
+        return res.status(401).send("Permission not found"); 
+      } 
+
+
+        res.status(200).json({message: "User verified", name: user.name, email: user.email})
+  } catch (error) {
+      console.log(error)
+      res.status(500).json({message: "Internal server error"})
+  }
+}

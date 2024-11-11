@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userLogIn = exports.userSignUp = exports.getAllUser = void 0;
+exports.verifyUser = exports.userLogIn = exports.userSignUp = exports.getAllUser = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const bcryptjs_1 = require("bcryptjs");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -94,4 +94,21 @@ const userLogIn = async (req, res, next) => {
     }
 };
 exports.userLogIn = userLogIn;
+const verifyUser = async (req, res, next) => {
+    try {
+        const user = await User_1.default.findById(res.locals.jwtData.id);
+        if (!user) {
+            return res.status(401).json({ message: "User not registered or token not found" });
+        }
+        if (user._id.toString() !== res.locals.jwtData.id) {
+            return res.status(401).send("Permission not found");
+        }
+        res.status(200).json({ message: "User verified", name: user.name, email: user.email });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.verifyUser = verifyUser;
 //# sourceMappingURL=user.controller.js.map
