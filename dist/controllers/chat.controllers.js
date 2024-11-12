@@ -5,4 +5,4 @@ const generateChat = async (req, res, next) => {
     // 
 };
 exports.generateChat = generateChat;
-//# sourceMappingURL=chat.controller
+//# sourceMappingURL=chat.controllers.js.map
