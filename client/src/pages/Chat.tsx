@@ -1,58 +1,41 @@
+import { useRef, useState } from 'react'
 import { Avatar, Box, Button, IconButton, Typography } from '@mui/material'
 import  red from '@mui/material/colors/red'
-import { useAuth } from '../context/AuthContext'
-import ChatItem from '../components/chat/ChatItem'
 import { IoMdSend } from 'react-icons/io'
+import { sendChatRequest } from '../helpers/api-communicators'
+import ChatItem from '../components/chat/ChatItem'
+import { useAuth } from '../context/AuthContext'
 
 
 
-const chatMessages = [
-  {
-    role: 'user',
-    content: 'How can I reset my password?',
-  },
-  {
-    role: 'assistant',
-    content: 'To reset your password, go to the login page, click on "Forgot Password," and follow the instructions sent to your email.',
-  },
-  {
-    role: 'user',
-    content: 'What are the support hours?',
-  },
-  {
-    role: 'assistant',
-    content: 'Our support team is available 24/7 to assist you with any inquiries.',
-  },
-  {
-    role: 'user',
-    content: 'Can you help me place an order through WhatsApp?',
-  },
-  {
-    role: 'assistant',
-    content: 'Sure! To place an order through WhatsApp, send us a message with the order details, and we’ll take it from there.',
-  },
-  {
-    role: 'user',
-    content: 'What payment methods do you accept?',
-  },
-  {
-    role: 'assistant',
-    content: 'We accept payments via credit card, debit card, and PayPal.',
-  },
-  {
-    role: 'user',
-    content: 'How can I contact a driver?',
-  },
-  {
-    role: 'assistant',
-    content: 'Once your order is confirmed, you’ll receive driver contact details via the app and WhatsApp.',
-  },
-]
+type Message =  {
+  role: "user" | "assistant";
+  content: string;
+}
 
 
 const Chat = () => {
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const auth = useAuth();
+  const [chatMessages, setChatMessages] = useState<Message[]>([])
+
+  const handleSubmit = async() => {
+    const content = inputRef.current?.value as string;
+    if(inputRef && inputRef.current){
+      inputRef.current.value = "";
+    }
+
+    const newMessage: Message = {role: "user", content};
+    setChatMessages((prev) => [...prev, newMessage]);
+
+
+    //sending messages to the backend api
+    const chatData = await sendChatRequest(content)
+
+    //receiving data from backend
+    setChatMessages([...chatData.chats]);
+  }
 
   return (
     <Box sx={{ display: 'flex',  flex: 1,
@@ -140,7 +123,8 @@ const Chat = () => {
                }}>
 
               {chatMessages.map((chat, index) => (
-                <ChatItem  role={chat.role as "user" | "assistant"} content={chat.content} key={index}/>
+                //@ts-ignore
+                <ChatItem  role={chat.role} content={chat.content} key={index}/>
               ))}
               </Box>
               <div 
@@ -152,7 +136,9 @@ const Chat = () => {
                   margin: "auto",
                 }}>
                   {" "}
-              <input type="text"    
+              <input
+              ref={inputRef}
+               type="text"    
               style={{
               width: "100%",
               backgroundColor: "transparent",
@@ -162,7 +148,7 @@ const Chat = () => {
               color: "white",
               fontSize: "20px",
             }} />
-            <IconButton sx={{ color: "white", mx: 1 }}>
+            <IconButton sx={{ color: "white", mx: 1 }} onClick={handleSubmit}>
               <IoMdSend />
             </IconButton>
               </div>

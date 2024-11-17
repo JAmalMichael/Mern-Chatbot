@@ -5,8 +5,9 @@ import { useAuth } from '../../context/AuthContext'
 const ChatItem = ({content, role}: {content: string, role: "user" | "assistant"}) => {
 
   const auth = useAuth();
+
   return (
-    role === "user" ? (
+    role === "assistant" ? (
     <Box 
         sx={{
         display: "flex",
@@ -16,9 +17,8 @@ const ChatItem = ({content, role}: {content: string, role: "user" | "assistant"}
         borderRadius: 2,
         my: 1,
       }}>
-        <Avatar  sx={{  ml: "0", bgcolor: "black", color: "white" }}>
-        {auth?.user?.name[0]}
-        {auth?.user?.name.split(" ")[1][0]}
+        <Avatar  sx={{ ml: "0" }}>
+          <img src="openai.png" alt="openai" width={"30px"} />
         </Avatar>
         <Box>
           <Typography fontSize={"20px"} >
@@ -35,8 +35,9 @@ const ChatItem = ({content, role}: {content: string, role: "user" | "assistant"}
         gap: 2,
         borderRadius: 2,
     }}>
-      <Avatar  sx={{ ml: "0" }}>
-            <img src="openai.png" alt='openai' width={"30px"} />
+      <Avatar  sx={{ ml: "0", bgcolor: "black", color: "white" }}>
+      {auth?.user?.name[0]}
+      {auth?.user?.name.split(" ")[1][0]}
       </Avatar>
       <Box>
         <Typography fontSize={"20px"} >

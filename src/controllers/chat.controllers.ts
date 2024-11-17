@@ -1,38 +1,79 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/User";
-import { configureOpenAi } from "../config/openai.config";
-import { ChatCompletionRequestMessage, OpenAIApi } from "openai";
+// import { configureOpenAI } from "../config/openai.config";
+import  OpenAI  from "openai";
 
-export const generateChat = async (req: Request, res: Response, next: NextFunction) => {
-   
-    const { message } = req.body;
- try {        
+type ChatCompletionUserMessageParam = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
+
+export const generateChat = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+      const { message } = req.body;
+      try {
+
         const user = await User.findById(res.locals.jwtData.id)
-    
         if(!user) {
-            return res.status(401).json({ message: "User not registered" })
+          return res.status(401).json({message: "Unauthorized request"})
         }
-    
-        // grab chats of the user
         const chats = user.chats.map(({role, content}) => ({
-                role, content
-        })) as ChatCompletionRequestMessage[];
-        chats.push({  content: message, role: 'user'});
-        user.chats.push({content: message, role: "user"})
-        // send chat to openai and get response
-        const config = configureOpenAi();
-        const openai = new OpenAIApi(config);
-        const chatResponse = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
-            messages: chats,
-        })
-        user.chats.push(chatResponse.data.choices[0].message);
-        await user.save();
-        return res.status(200).json({  chats: user.chats})
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Internal server error"})
-    }
-    
+          role,
+          content
+        }))  as ChatCompletionUserMessageParam[] ;
 
+        chats.push({ content: message, role: "user" });
+        user.chats.push({ content: message, role: "user" });
+
+
+        //configure ai
+        // const config = configureOpenAI();
+        const apiKey = process.env.OPEN_AI_SECRET;
+        const organizationId = process.env.OPENAI_ORGANIZATION_ID
+        if (!apiKey) {
+            throw new Error("Missing OpenAI API key.");
+        }
+        if (!organizationId) {
+            throw new Error("Missing OpenAI organization ID.");
+        }
+      const openai = new OpenAI({
+        organization: organizationId,
+        apiKey: apiKey,
+      });
+
+        //send chats to ai
+        const chatResponse = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: chats,
+          stream: true, // For streaming responses
+          max_tokens: 1000, // Set appropriate token limit
+          temperature: 0.7, 
+        })
+
+        //get response from ai
+        let assistantMessage = ""; 
+        for await (const chunk of chatResponse) {
+          const delta = chunk.choices[0]?.delta?.content;
+          if (delta) {
+            assistantMessage += delta; 
+          }
+        }
+        
+        // Push the complete response to user.chats
+        if (assistantMessage) {
+          user.chats.push({
+            role: "assistant",
+            content: assistantMessage,
+          });
+        }
+        
+        await user.save()
+        return res.status(200).json({ chats: user.chats });
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : error);
+        return res.status(500).json({ meesage: "AI Error, Internal server error" })
+      }
 }

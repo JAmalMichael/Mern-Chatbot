@@ -8,6 +8,6 @@ const user_router_js_1 = __importDefault(require("./user.router.js"));
 const chat_routes_js_1 = __importDefault(require("./chat.routes.js"));
 const router = (0, express_1.Router)();
 router.use('/user', user_router_js_1.default);
-router.use('/chats', chat_routes_js_1.default);
+router.use('/chat', chat_routes_js_1.default);
 exports.default = router;
 //# sourceMappingURL=index.js.map

@@ -1,9 +1,17 @@
-import { Configuration } from "openai";
+import Configuration from "openai"
 
-export const configureOpenAi = () =>  {
+export const configureOpenAI = () =>  {
+    const apiKey = process.env.OPEN_AI_SECRET;
+    const organizationId = process.env.OPENAI_ORGANIZATION_ID
+    if (!apiKey) {
+        throw new Error("Missing OpenAI API key.");
+    }
+    if (!organizationId) {
+        throw new Error("Missing OpenAI organization ID.");
+    }
     const config = new Configuration({
-        apiKey: process.env.OPEN_AI_SECRET,
-        organization: process.env.OPEN_AI_ORGANIZATION_ID,
+        apiKey: apiKey,
+        organization: organizationId,
     })
 
     return config;
